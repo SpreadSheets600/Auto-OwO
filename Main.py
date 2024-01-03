@@ -22,10 +22,23 @@ WEBHOOK_URL = "DISCORD WEBHOOK URL"  # Webhook URL
 
 client = commands.Bot(command_prefix="!")
 
+hunt_count = 0
+battle_count = 0
+pray_count = 0
+gamble_count = 0
+gamble_profit = 0
+cookie_count = 0
+cash_amt = 0
+sell_count = 0
+sell_profit = 0
+inv_count = 0
+rand_count = 0
+
 
 async def hunt(channel):
     await channel.send("owo hunt")
     print(f"[ USED    ] ---- Hunt")
+    hunt_count += 1
 
     await asyncio.sleep(7)
 
@@ -33,24 +46,63 @@ async def hunt(channel):
 async def battle(channel):
     await channel.send("owo battle")
     print(f"[ USED    ] ---- Battle")
+    battle_count += 1
 
     await asyncio.sleep(7)
 
+async def gamble(channel):
+
+    randamt = random.randint(1,1000)
+
+    await channel.send(f"owo flip {randamt}")
+    print(f"[ USED    ] ---- Flip --- {randamt}")
+    gamble_count += 1
+
+    def check(m):
+        return m.author != client.user and "sold" in m.content  
+    
+    gamble_message = await client.wait_for("message", check=check)
+
+    if "spent" in gamble_message.content:
+
+        content_split = gamble_message.content.split(' ')
+
+        if "lost" in content_split[0]:
+            gamble_profit = int(content_split[-1].split()[0])
+            gamble_profit = gamble_profit * -1
+
+        elif "won" in content_split[0]:
+            gamble_profit = int(content_split[-1].split()[0])
+
+
+
+    await asyncio.sleep(7)
 
 async def pray(channel):
     await channel.send("owo pray")
     print(f"[ USED    ] ---- Pray")
+    pray_count += 1
 
     await asyncio.sleep(7)
 
 
 async def rand_message(channel):
     random_owo_messages = ["owo", "uwu", "cute owo", "owo sexy", "owo love ya"]
+    random_owo_faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"]
+    random_owo_actions = ["*nuzzles u*", "*winks*", "*notices bulge*"]
 
     await channel.send(
         random_owo_messages[random.randint(0, len(random_owo_messages) - 1)]
     )
+    await channel.send(
+        random_owo_faces[random.randint(0, len(random_owo_faces) - 1)]
+    )
+    await channel.send(
+        random_owo_actions[random.randint(0, len(random_owo_actions) - 1)]
+    )
+
     print(f"[ USED    ] ---- Random Message")
+    rand_count += 1
 
     await asyncio.sleep(7)
 
@@ -63,6 +115,7 @@ async def cookie(channel):
 
     await channel.send(f"owo cookie <@{OWNER_ID}>")
     print(f"[ GAVE    ] ---- Cookie")
+    cookie_count += 1
 
     await asyncio.sleep(7)
 
@@ -76,11 +129,33 @@ async def sell(channel):
 
     await channel.send(message)
     print(f"[ USED    ] ---- Sell")
+    
+    def check(m):
+        return m.author != client.user and "sold" in m.content  
+    
+    sold_message = await client.wait_for("message", check=check)
+
+    sold = re.findall(r"`(.*?)`", message.content)
+
+    if not sold:
+        print("[ WARN    ] ---- Nothing Sold")
+        return
+    
+    elif "x" in sold_message.content:
+
+        content_split = sold_message.content.split(":")
+        x_value = int(content_split[-2][1:])
+        last_number = int(content_split[-1].split()[0])
+
+        sell_count = sell_count + x_value
+        sell_profit = sell_profit + last_number
+        
 
     await asyncio.sleep(7)
 
 
 async def inventory(channel):
+
     await channel.send("owo inv")
     print(f"[ USED    ] ---- Inventory")
 
@@ -106,6 +181,23 @@ async def inventory(channel):
     await asyncio.sleep(3)
 
 
+async def cash(channel):
+    global cash_amt 
+
+    await channel.send("owo cash")
+    print(f"[ USED    ] ---- Cash")
+
+    def check(m):
+        return m.author != client.user and "Cash" in m.content
+
+    message = await client.wait_for("message", check=check)
+
+    cash = message.content.split(" ")
+    amt = cash[-2]
+    amt = int(amt.replace(",", ""))
+
+    cash_amt = amt
+
 async def send_messages():
     global daily_wait
 
@@ -114,6 +206,7 @@ async def send_messages():
     await sell(channel)
     await hunt(channel)
     await pray(channel)
+    await gamble(channel)
     await battle(channel)
     await cookie(channel)
     await inventory(channel)
@@ -126,6 +219,13 @@ async def message_includes(message, content, ignore_case=False):
     else:
         return content in message.content
 
+@client.command()
+async def help(ctx):
+    await ctx.send("```!say <message> - Repeates After You\n!stats - Shows Stats\n!help - Shows This Message```")
+
+@client.command()
+async def stats(ctx):
+    await ctx.send(f"```Hunt Count: {hunt_count}\nBattle Count: {battle_count}\nPray Count: {pray_count}\nGamble Count: {gamble_count}\nGamble Profit : {gamble_profit}\nCookie Count: {cookie_count}\nSell Count: {sell_count}\nSell Profit: {sell_profit}\nInv Count: {inv_count}\nRandom Message Count: {rand_count}\n Cash: {cash_amt}` ```")
 
 @client.command()
 async def say(ctx, *, message):
