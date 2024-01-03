@@ -106,24 +106,6 @@ async def inventory(channel):
     await asyncio.sleep(3)
 
 
-async def daily(channel):
-    global daily_wait
-
-    await channel.send("owo daily")
-    print(f"[ USED    ] ---- Daily")
-
-    def check(m):
-        return m.author != client.user and "Nu" in m.content
-
-    message = await client.wait_for("message", check=check)
-
-    time_str = re.findall(r"\d+H \d+M \d+S", message.content)[0]
-    hours, minutes, seconds = map(int, re.findall(r"\d+", time_str))
-
-    wait_time = hours * 3600 + minutes * 60 + seconds
-    print(f"[ WAIT    ] ---- Next Daily : {timedelta(seconds=wait_time)}")
-
-
 async def send_messages():
     global daily_wait
 
@@ -134,9 +116,6 @@ async def send_messages():
     await pray(channel)
     await battle(channel)
     await cookie(channel)
-
-    await daily(channel)
-
     await inventory(channel)
     await rand_message(channel)
 
