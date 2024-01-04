@@ -1,7 +1,7 @@
 
 <h1 align="center">OwO Farm Bot V1 </h1>
 
-## Features
+## 👑 Features
 
 -   Auto Pray
 -   Auto Hunt
@@ -16,10 +16,12 @@
 -   Auto CheckList
     -   Auto Cookie
 -   Auto Animals Sell
+-   Auto Send Random Messages
 
-## TO DO
+## 🎈 TO DO
 
 - [ ] **Quests**
 - [ ] **USE Gems**
 - [ ] **Ban Bypass**
+- [ ] **USE Random Reactions**
 
