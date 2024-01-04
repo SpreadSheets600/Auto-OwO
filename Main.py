@@ -14,13 +14,14 @@ from datetime import timedelta
 from discord.ext import commands, tasks
 from discord_webhook import DiscordWebhook
 
-CHANNEL_ID = 1030686632153723001  # Grind Channel ID
+CHANNEL_ID = 1191786366829350964  # Grind Channel ID
 OWNER_ID = 727012870683885578  # Owner ID
 
-TOKEN = "YOUR TOKEN HERE"  # SelfBOT Token
-WEBHOOK_URL = "DISCORD WEBHOOK URL"  # Webhook URL
+TOKEN = ""
+WEBHOOK_URL = ""  # Webhook URL
 
 client = commands.Bot(command_prefix="!")
+client.remove_command("help")
 
 hunt_count = 0
 battle_count = 0
@@ -36,13 +37,17 @@ rand_count = 0
 
 
 async def hunt(channel):
+
+    global hunt_count
+
     await channel.send("owo hunt")
     print(f"[ USED    ] ---- Hunt")
+
     hunt_count += 1
 
     webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ USED    ] ---- Hunt```"
-        )
+        url=WEBHOOK_URL, content="```[ USED    ] ---- Hunt```"
+    )
 
     webhook.execute()
 
@@ -50,73 +55,62 @@ async def hunt(channel):
 
 
 async def battle(channel):
+
+    global battle_count
+
     await channel.send("owo battle")
     print(f"[ USED    ] ---- Battle")
     battle_count += 1
 
     webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ USED    ] ---- Battle```"
-        )
-    
+        url=WEBHOOK_URL, content="```[ USED    ] ---- Battle```"
+    )
+
     webhook.execute()
 
     await asyncio.sleep(7)
 
-async def gamble(channel):
 
-    randamt = random.randint(1,1000)
+async def gamble(channel):
+    global gamble_count
+
+    randamt = random.randint(1, 1000)
 
     await channel.send(f"owo flip {randamt}")
     print(f"[ USED    ] ---- Flip --- {randamt}")
     gamble_count += 1
 
-    def check(m):
-        return m.author != client.user and "sold" in m.content  
-    
-    gamble_message = await client.wait_for("message", check=check)
+    webhook = DiscordWebhook(
+        url=WEBHOOK_URL, content="```[ USED    ] ---- Flip --- " +
+        str(randamt) + "```"
+    )
 
-    if "spent" in gamble_message.content:
-
-        content_split = gamble_message.content.split(' ')
-
-        if "lost" in content_split[0]:
-            gamble_profit = int(content_split[-1].split()[0])
-            gamble_profit = gamble_profit * -1
-
-            webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ USED    ] ---- Gamble\n[ LOST  ] ---- " + str(gamble_profit) + "```"
-
-        )
-    
-            webhook.execute()
-
-        elif "won" in content_split[0]:
-            gamble_profit = int(content_split[-1].split()[0])
-
-            webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ USED    ] ---- Gamble\n[ WON  ] ---- " + str(gamble_profit) + "```"
-
-        )
-    
-            webhook.execute()
+    webhook.execute()
 
     await asyncio.sleep(7)
 
+
 async def pray(channel):
+
+    global pray_count
+
     await channel.send("owo pray")
     print(f"[ USED    ] ---- Pray")
     pray_count += 1
 
     webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ USED    ] ---- Pray```"
-        )
-    
+        url=WEBHOOK_URL, content="```[ USED    ] ---- Pray```"
+    )
+
     webhook.execute()
 
     await asyncio.sleep(7)
 
 
 async def rand_message(channel):
+
+    global rand_count
+
     random_owo_messages = ["owo", "uwu", "cute owo", "owo sexy", "owo love ya"]
     random_owo_faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"]
     random_owo_actions = ["*nuzzles u*", "*winks*", "*notices bulge*"]
@@ -135,11 +129,10 @@ async def rand_message(channel):
     rand_count += 1
 
     webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ USED    ] ---- Random Message```"
-        )
-    
-    webhook.execute()
+        url=WEBHOOK_URL, content="```[ USED    ] ---- Random Message```"
+    )
 
+    webhook.execute()
 
     await asyncio.sleep(7)
 
@@ -148,6 +141,8 @@ types = ["c", "r"]  # Chnage Type Accordingly
 
 
 async def cookie(channel):
+
+    global cookie_count
     global OWNER_ID
 
     await channel.send(f"owo cookie <@{OWNER_ID}>")
@@ -155,16 +150,17 @@ async def cookie(channel):
     cookie_count += 1
 
     webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ GAVE    ] ---- Cookie```"
-        )
-    
-    webhook.execute()
+        url=WEBHOOK_URL, content="```[ GAVE    ] ---- Cookie```"
+    )
 
+    webhook.execute()
 
     await asyncio.sleep(7)
 
 
 async def sell(channel):
+    global sell_count
+    global sell_profit
     global types
 
     message = "owo sell "
@@ -173,37 +169,19 @@ async def sell(channel):
 
     await channel.send(message)
     print(f"[ USED    ] ---- Sell")
-    
-    def check(m):
-        return m.author != client.user and "sold" in m.content  
-    
-    sold_message = await client.wait_for("message", check=check)
 
-    sold = re.findall(r"`(.*?)`", message.content)
-
-    if not sold:
-        print("[ WARN    ] ---- Nothing Sold")
-        return
-    
-    elif "x" in sold_message.content:
-
-        content_split = sold_message.content.split(":")
-        x_value = int(content_split[-2][1:])
-        last_number = int(content_split[-1].split()[0])
-
-        sell_count = sell_count + x_value
-        sell_profit = sell_profit + last_number
-        
     webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ USED    ] ---- Sell\n[ PROFIT  ] ---- " + str(sell_profit) + "```"
-        )
-    
+        url=WEBHOOK_URL, content="```[ USED    ] ---- Sell```"
+    )
+
     webhook.execute()
 
     await asyncio.sleep(7)
 
 
 async def inventory(channel):
+
+    global inv_count
 
     await channel.send("owo inv")
     print(f"[ USED    ] ---- Inventory")
@@ -228,45 +206,47 @@ async def inventory(channel):
         print("[ USED    ] ---- Weapon Crates")
 
     webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ USED    ] ---- Inventory```"
-        )
-    
+        url=WEBHOOK_URL, content="```[ USED    ] ---- Inventory```"
+    )
+
     webhook.execute()
 
     await asyncio.sleep(3)
 
 
 async def cash(channel):
-    global cash_amt 
+
+    global cash_amt
 
     await channel.send("owo cash")
     print(f"[ USED    ] ---- Cash")
 
     def check(m):
-        return m.author != client.user and "Cash" in m.content
+        return m.author != client.user and "cowoncy" in m.content
 
     message = await client.wait_for("message", check=check)
 
     cash = message.content.split(" ")
-    amt = cash[-2]
+
+    amt = cash[-2][4:-2]
     amt = int(amt.replace(",", ""))
 
     cash_amt = amt
 
     webhook = DiscordWebhook(
-            url=WEBHOOK_URL, content="```[ USED    ] ---- Cash\n[ AMT  ] ---- " + str(amt) + "```"
-        )
-    
+        url=WEBHOOK_URL, content="```[ USED    ] ---- Cash\n[ AMT  ] ---- " + str(
+            amt) + "```"
+    )
+
     webhook.execute()
-    
+
 
 async def send_messages():
-    global daily_wait
 
     channel = client.get_channel(CHANNEL_ID)
 
-    await sell(channel)
     await hunt(channel)
+    await sell(channel)
     await pray(channel)
     await gamble(channel)
     await battle(channel)
@@ -281,18 +261,20 @@ async def message_includes(message, content, ignore_case=False):
     else:
         return content in message.content
 
+
 @client.command()
 async def help(ctx):
     await ctx.send("```!say <message> - Repeates After You\n!stats - Shows Stats\n!help - Shows This Message```")
 
+
 @client.command()
 async def stats(ctx):
-    await ctx.send(f"```Hunt Count: {hunt_count}\nBattle Count: {battle_count}\nPray Count: {pray_count}\nGamble Count: {gamble_count}\nGamble Profit : {gamble_profit}\nCookie Count: {cookie_count}\nSell Count: {sell_count}\nSell Profit: {sell_profit}\nInv Count: {inv_count}\nRandom Message Count: {rand_count}\n Cash: {cash_amt}` ```")
+    await ctx.send(f"----- SELFBOT STATS -----```Hunt Count: {hunt_count}\nBattle Count: {battle_count}\nPray Count: {pray_count}\nGamble Count: {gamble_count}\nGamble Profit : {gamble_profit}\nCookie Count: {cookie_count}\nSell Count: {sell_count}\nSell Profit: {sell_profit}\nInv Count: {inv_count}\nRandom Message Count: {rand_count}\n\nCash: {cash_amt}```")
+
 
 @client.command()
 async def say(ctx, *, message):
     await ctx.send(message)
-
 
 
 @client.event
@@ -315,7 +297,8 @@ async def on_message(message):
         user = client.get_user(OWNER_ID)
         await user.send(f"```Captcha Detected | Stopping BOT```")
 
-        notification.notify(title="Captcha Detected",message="Stopping The BOT",timeout=10)
+        notification.notify(title="Captcha Detected",
+                            message="Stopping The BOT", timeout=10)
 
         await client.close()
 
@@ -333,7 +316,8 @@ async def on_message(message):
         user = client.get_user(OWNER_ID)
         await user.send(f"```Captcha Detected | Stopping BOT```")
 
-        notification.notify(title="Captcha Detected",message="Stopping The BOT",timeout=10)
+        notification.notify(title="Captcha Detected",
+                            message="Stopping The BOT", timeout=10)
 
         await client.close()
 
@@ -351,14 +335,18 @@ async def on_ready():
     print(f"[ USER ID ] ---- {client.user.id}")
     print(f"[ CHANNEL ] ---- {CHANNEL_ID}")
     print()
+    print(f"--------------------------------------")
 
+    await client.change_presence(status=discord.Status.online)
     clientactivity = discord.Game(name=f"With OwO")
+
+    await cash(client.get_channel(CHANNEL_ID))
 
     await client.change_presence(activity=clientactivity)
 
     while True:
         await send_messages()
-        await asyncio.sleep(5)
+        await asyncio.sleep(7)
 
 
 client.run(TOKEN)
