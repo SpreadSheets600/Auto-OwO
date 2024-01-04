@@ -40,6 +40,12 @@ async def hunt(channel):
     print(f"[ USED    ] ---- Hunt")
     hunt_count += 1
 
+    webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ USED    ] ---- Hunt```"
+        )
+
+    webhook.execute()
+
     await asyncio.sleep(7)
 
 
@@ -47,6 +53,12 @@ async def battle(channel):
     await channel.send("owo battle")
     print(f"[ USED    ] ---- Battle")
     battle_count += 1
+
+    webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ USED    ] ---- Battle```"
+        )
+    
+    webhook.execute()
 
     await asyncio.sleep(7)
 
@@ -71,10 +83,22 @@ async def gamble(channel):
             gamble_profit = int(content_split[-1].split()[0])
             gamble_profit = gamble_profit * -1
 
+            webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ USED    ] ---- Gamble\n[ LOST  ] ---- " + str(gamble_profit) + "```"
+
+        )
+    
+            webhook.execute()
+
         elif "won" in content_split[0]:
             gamble_profit = int(content_split[-1].split()[0])
 
+            webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ USED    ] ---- Gamble\n[ WON  ] ---- " + str(gamble_profit) + "```"
 
+        )
+    
+            webhook.execute()
 
     await asyncio.sleep(7)
 
@@ -82,6 +106,12 @@ async def pray(channel):
     await channel.send("owo pray")
     print(f"[ USED    ] ---- Pray")
     pray_count += 1
+
+    webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ USED    ] ---- Pray```"
+        )
+    
+    webhook.execute()
 
     await asyncio.sleep(7)
 
@@ -104,6 +134,13 @@ async def rand_message(channel):
     print(f"[ USED    ] ---- Random Message")
     rand_count += 1
 
+    webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ USED    ] ---- Random Message```"
+        )
+    
+    webhook.execute()
+
+
     await asyncio.sleep(7)
 
 
@@ -116,6 +153,13 @@ async def cookie(channel):
     await channel.send(f"owo cookie <@{OWNER_ID}>")
     print(f"[ GAVE    ] ---- Cookie")
     cookie_count += 1
+
+    webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ GAVE    ] ---- Cookie```"
+        )
+    
+    webhook.execute()
+
 
     await asyncio.sleep(7)
 
@@ -150,6 +194,11 @@ async def sell(channel):
         sell_count = sell_count + x_value
         sell_profit = sell_profit + last_number
         
+    webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ USED    ] ---- Sell\n[ PROFIT  ] ---- " + str(sell_profit) + "```"
+        )
+    
+    webhook.execute()
 
     await asyncio.sleep(7)
 
@@ -178,6 +227,12 @@ async def inventory(channel):
         await channel.send("owo wc all")
         print("[ USED    ] ---- Weapon Crates")
 
+    webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ USED    ] ---- Inventory```"
+        )
+    
+    webhook.execute()
+
     await asyncio.sleep(3)
 
 
@@ -197,6 +252,13 @@ async def cash(channel):
     amt = int(amt.replace(",", ""))
 
     cash_amt = amt
+
+    webhook = DiscordWebhook(
+            url=WEBHOOK_URL, content="```[ USED    ] ---- Cash\n[ AMT  ] ---- " + str(amt) + "```"
+        )
+    
+    webhook.execute()
+    
 
 async def send_messages():
     global daily_wait
